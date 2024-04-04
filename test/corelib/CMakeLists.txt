@@ -48,7 +48,6 @@ set(JSONCONS_INCLUDE_DIR ${JSONCONS_PROJECT_DIR}/include)
 set(JSONCONS_THIRD_PARTY_INCLUDE_DIR ${JSONCONS_PROJECT_DIR}/third_party)
 
 set(CATCH_INCLUDE_DIR ${JSONCONS_THIRD_PARTY_INCLUDE_DIR}/catch)
-add_library(catch INTERFACE)
 
 if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
     target_compile_features(catch INTERFACE cxx_range_for)  # for C++11 - flags
