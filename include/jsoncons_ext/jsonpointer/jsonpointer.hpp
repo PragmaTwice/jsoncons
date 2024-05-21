@@ -33,31 +33,157 @@ namespace jsoncons { namespace jsonpointer {
 
     } // namespace detail
 
+    // basic_json_pointer
+    
     template <class CharT>
-    std::basic_string<CharT> escape_string(const std::basic_string<CharT>& s)
+    class json_pointer_iter
     {
-        std::basic_string<CharT> result;
-        for (auto c : s)
+    public:
+        using char_type = CharT;
+        using string_type = std::basic_string<char_type>;
+        using iterator_category = std::forward_iterator_tag;
+
+        using value_type = std::basic_string_view<char_type>;
+        using pointer = const value_type*;
+        using reference = const value_type&;
+
+    private:
+        const char_type* start_;
+        const char_type* end_; 
+        const char_type* cur_;
+        bool done_;
+        string_type buffer_;
+        value_type current_;
+    public:
+        json_pointer_iter() :start_(nullptr),  end_(nullptr), cur_(nullptr), done_(true)
+        { 
+        }
+
+        explicit json_pointer_iter(value_type ptr)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()),done_(start_ < end_)
         {
-            switch (c)
+            std::error_code ec;
+            current_ = get_next_token(ec);
+            if (JSONCONS_UNLIKELY(ec))
             {
-                case '~':
-                    result.push_back('~');
-                    result.push_back('0');
-                    break;
-                case '/':
-                    result.push_back('~');
-                    result.push_back('1');
-                    break;
-                default:
-                    result.push_back(c);
-                    break;
+                JSONCONS_THROW(jsonpointer_error(ec));
             }
         }
-        return result;
-    }
 
-    // basic_json_pointer
+        explicit json_pointer_iter(const value_type& ptr, std::error_code& ec)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()), done_(start_ < end_)
+        {
+            current_ = get_next_token(ec);
+        }
+
+        explicit json_pointer_iter(const char_type* end) 
+            : start_(end), end_(end), cur_(end), done_(true)
+        { 
+        }
+
+        json_pointer_iter(const json_pointer_iter&) = default;
+        json_pointer_iter(json_pointer_iter&&) = default;
+        json_pointer_iter& operator=(const json_pointer_iter&) = default;
+        json_pointer_iter& operator=(json_pointer_iter&&) = default;
+
+        reference operator*() const 
+        {
+            return current_;
+        }
+
+        pointer operator->() const 
+        {
+            return &current_;
+        }
+
+        json_pointer_iter& operator++() 
+        {
+            if (cur_ < end_)
+            {
+                std::error_code ec;
+                current_ = get_next_token(ec);
+                if (JSONCONS_UNLIKELY(ec))
+                {
+                    JSONCONS_THROW(jsonpointer_error(ec));
+                }
+            }
+            return *this;
+        }
+
+        json_pointer_iter& increment(std::error_code& ec) 
+        {
+            if (cur_ < end_)
+            {
+                current_ = get_next_token(ec);
+            }
+            return *this;
+        }
+
+        json_pointer_iter operator++(int) 
+        {
+            json_pointer_iter temp = *this;
+            ++*this;
+            return temp;
+        }
+
+        bool operator==(const json_pointer_iter& rhs) const noexcept
+        {
+            return done_ == rhs.done_ && cur_ == rhs.cur_;
+        }
+
+        bool operator!=(const json_pointer_iter& rhs) const noexcept
+        {
+            return !(*this == rhs);
+        }
+
+    private:
+
+        value_type get_next_token(std::error_code& ec)
+        {
+            if (JSONCONS_UNLIKELY(cur_ >= end_))
+            {
+                done_ = true;
+                cur_ = end_;
+                return value_type{};
+            }
+            start_ = ++cur_;
+            while (cur_ < end_ && *cur_ != '~' && *cur_ != '/')
+            {
+                ++cur_;
+            }
+            if (JSONCONS_LIKELY(cur_ == end_ || *cur_ == '/'))
+            {
+                return value_type(start_, cur_ - start_);
+            }
+            else // escape characters
+            {
+                buffer_ = string_type{start_, std::size_t(cur_-start_)};
+                while (cur_ < end_ && *cur_ != '/')
+                {
+                    if (*cur_ == '~')
+                    {
+                        ++cur_;
+                        if (JSONCONS_UNLIKELY(cur_ == end_ || !(*cur_ == '0' || *cur_ == '1')))
+                        {
+                            ec = jsonpointer_errc::expected_0_or_1;
+                            return value_type{};
+                        }
+                    }
+                    if (*cur_ == '0')
+                    {
+                        buffer_.push_back('~');
+                    }
+                    else if (*cur_ == '1')
+                    {
+                        buffer_.push_back('/');
+                    }
+                    ++cur_;
+                }
+            }
+
+            return buffer_;
+        }
+    };
 
     template <class CharT>
     class basic_json_pointer
@@ -65,134 +191,38 @@ namespace jsoncons { namespace jsonpointer {
     public:
         // Member types
         using char_type = CharT;
-        using string_type = std::basic_string<char_type>;
-        using string_view_type = jsoncons::basic_string_view<char_type>;
-        using const_iterator = typename std::vector<string_type>::const_iterator;
-        using iterator = const_iterator;
-        using const_reverse_iterator = typename std::vector<string_type>::const_reverse_iterator;
-        using reverse_iterator = const_reverse_iterator;
+        using string_type = std::basic_string<CharT>;
+        using string_view_type = jsoncons::basic_string_view<CharT>;
+        using const_iterator = json_pointer_iter<CharT>;
+        using iterator = json_pointer_iter<CharT>;
     private:
-        std::vector<string_type> tokens_;
+        string_type ptr_;
     public:
         // Constructors
         basic_json_pointer()
         {
         }
 
-        basic_json_pointer(const std::vector<string_type>& tokens)
-            : tokens_(tokens)
-        {
-        }
-
-        basic_json_pointer(std::vector<string_type>&& tokens)
-            : tokens_(std::move(tokens))
-        {
-        }
-
-        explicit basic_json_pointer(const string_view_type& s)
+        explicit basic_json_pointer(string_view_type ptr)
+            : ptr_(ptr)
         {
             std::error_code ec;
-            auto jp = parse(s, ec);
-            if (ec)
+            validate(ec);
+            if (JSONCONS_UNLIKELY(ec))
             {
                 JSONCONS_THROW(jsonpointer_error(ec));
             }
-            tokens_ = std::move(jp.tokens_);
         }
 
-        explicit basic_json_pointer(const string_view_type& s, std::error_code& ec)
+        basic_json_pointer(string_view_type ptr, std::error_code& ec) noexcept
+            : ptr_(ptr)
         {
-            auto jp = parse(s, ec);
-            if (!ec)
-            {
-                tokens_ = std::move(jp.tokens_);
-            }
+            validate(ec);
         }
 
         basic_json_pointer(const basic_json_pointer&) = default;
 
         basic_json_pointer(basic_json_pointer&&) = default;
-
-        static basic_json_pointer parse(const string_view_type& input, std::error_code& ec)
-        {
-            std::vector<string_type> tokens;
-            if (input.empty())
-            {
-                return basic_json_pointer<CharT>();
-            }
-
-            const char_type* p = input.data();
-            const char_type* pend = input.data() + input.size();
-            string_type unescaped;
-
-            auto state = jsonpointer::detail::pointer_state::start;
-            string_type buffer;
-
-            while (p < pend)
-            {
-                    switch (state)
-                    {
-                        case jsonpointer::detail::pointer_state::start: 
-                            switch (*p)
-                            {
-                                case '/':
-                                    state = jsonpointer::detail::pointer_state::new_token;
-                                    break;
-                                default:
-                                    ec = jsonpointer_errc::expected_slash;
-                                    return basic_json_pointer();
-                            };
-                            break;
-                        case jsonpointer::detail::pointer_state::part:
-                            state = jsonpointer::detail::pointer_state::new_token; 
-                            JSONCONS_FALLTHROUGH;
-
-                        case jsonpointer::detail::pointer_state::new_token: 
-                            switch (*p)
-                            {
-                                case '/':
-                                    tokens.push_back(buffer);
-                                    buffer.clear();
-                                    state = jsonpointer::detail::pointer_state::part; 
-                                    break;
-                                case '~':
-                                    state = jsonpointer::detail::pointer_state::escaped;
-                                    break;
-                                default:
-                                    buffer.push_back(*p);
-                                    break;
-                            };
-                            break;
-                        case jsonpointer::detail::pointer_state::escaped: 
-                            switch (*p)
-                            {
-                                case '0':
-                                    buffer.push_back('~');
-                                    state = jsonpointer::detail::pointer_state::new_token;
-                                    break;
-                                case '1':
-                                    buffer.push_back('/');
-                                    state = jsonpointer::detail::pointer_state::new_token;
-                                    break;
-                                default:
-                                    ec = jsonpointer_errc::expected_0_or_1;
-                                    return basic_json_pointer();
-                            };
-                            break;
-                    }
-                    ++p;
-            }
-            if (state == jsonpointer::detail::pointer_state::escaped)
-            {
-                ec = jsonpointer_errc::expected_0_or_1;
-                return basic_json_pointer();
-            }
-            if (state == jsonpointer::detail::pointer_state::new_token || state == jsonpointer::detail::pointer_state::part)
-            {
-                tokens.push_back(buffer);
-            }
-            return basic_json_pointer(tokens);
-        }
 
         // operator=
         basic_json_pointer& operator=(const basic_json_pointer&) = default;
@@ -203,12 +233,51 @@ namespace jsoncons { namespace jsonpointer {
 
         void clear()
         {
-            tokens_.clear();
+            ptr_.clear();
         }
 
-        basic_json_pointer& append(const string_type& s) 
+        basic_json_pointer& append(string_view_type token) 
         {
-            tokens_.push_back(s);
+            if (!ptr_.empty())
+            {
+                ptr_.push_back('/');
+            }
+            const char_type* start = token.data();
+            const char_type* cur = start;
+            const char_type* end = start + token.size();
+            while (cur < end && *cur != '~' && *cur != '/')
+            {
+                ++cur;
+            }
+            if (JSONCONS_LIKELY(cur == end))
+            {
+                ptr_.append(token);
+            }
+            else // escape characters
+            {
+                if (JSONCONS_LIKELY(cur != start))
+                {
+                    ptr_.append(start, cur-start);
+                }
+                while (cur < end)
+                {
+                    if (JSONCONS_UNLIKELY(*cur == '~'))
+                    {
+                        ptr_.push_back('~');
+                        ptr_.push_back('0');
+                    }
+                    else if (JSONCONS_UNLIKELY(*cur == '/'))
+                    {
+                        ptr_.push_back('~');
+                        ptr_.push_back('1');
+                    }
+                    else
+                    {
+                        ptr_.push_back(*cur);
+                    }
+                    ++cur;
+                }
+            }
             return *this;
         }
 
@@ -216,123 +285,111 @@ namespace jsoncons { namespace jsonpointer {
         typename std::enable_if<extension_traits::is_integer<IntegerType>::value, basic_json_pointer&>::type
         append(IntegerType val)
         {
+            if (!ptr_.empty())
+            {
+                ptr_.push_back('/');
+            }
             string_type s;
             jsoncons::detail::from_integer(val, s);
-            tokens_.push_back(s);
+            ptr_.append(s);
 
             return *this;
         }
 
-        basic_json_pointer& operator/=(const string_type& s) 
+        basic_json_pointer& operator/=(string_view_type s) 
         {
-            tokens_.push_back(s);
-            return *this;
+            return append(s);
         }
 
         template <class IntegerType>
         typename std::enable_if<extension_traits::is_integer<IntegerType>::value, basic_json_pointer&>::type
         operator/=(IntegerType val)
         {
-            string_type s;
-            jsoncons::detail::from_integer(val, s);
-            tokens_.push_back(s);
-
-            return *this;
+            return append(val);
         }
 
         basic_json_pointer& operator+=(const basic_json_pointer& p)
         {
-            for (const auto& s : p.tokens_)
-            {
-                tokens_.push_back(s);
-            }
+            ptr_.append(p.ptr_);
             return *this;
         }
 
         // Accessors
         bool empty() const
         {
-          return tokens_.empty();
+          return ptr_.empty();
         }
 
         string_type string() const
         {
-            return to_string();
+            return ptr_;
         }
 
         string_type to_string() const
         {
-            string_type buffer;
-            for (const auto& token : tokens_)
-            {
-                buffer.push_back('/');
-                for (auto c : token)
-                {
-                    switch (c)
-                    {
-                        case '~':
-                            buffer.push_back('~');
-                            buffer.push_back('0');
-                            break;
-                        case '/':
-                            buffer.push_back('~');
-                            buffer.push_back('1');
-                            break;
-                        default:
-                            buffer.push_back(c);
-                            break;
-                    }
-                }
-            }
-            return buffer;
+            return ptr_;
         }
 
         // Iterators
         iterator begin() const
         {
-            return tokens_.begin();
+            return iterator(ptr_);
         }
         iterator end() const
         {
-            return tokens_.end();
+            return iterator(ptr_.data() + ptr_.size());
         }
 
-        reverse_iterator rbegin() const
+        void validate(std::error_code& ec)
         {
-            return tokens_.rbegin();
+            iterator it = begin();
+            if (JSONCONS_UNLIKELY(ec))
+            {
+                return;
+            }
+            iterator last = end();
+            while (it != last)
+            {
+                it.increment(ec);
+                if (JSONCONS_UNLIKELY(ec))
+                {
+                    return;
+                }
+            }
         }
-        reverse_iterator rend() const
+
+        static basic_json_pointer parse(const string_view_type& input, std::error_code& ec)
         {
-            return tokens_.rend();
+            return basic_json_pointer<CharT>{input, ec};
         }
 
         // Non-member functions
-        friend basic_json_pointer<CharT> operator/(const basic_json_pointer<CharT>& lhs, const string_type& rhs)
+        friend basic_json_pointer operator/(const basic_json_pointer& lhs, string_view_type rhs)
         {
-            basic_json_pointer<CharT> p(lhs);
+            basic_json_pointer p(lhs);
             p /= rhs;
             return p;
         }
 
-        friend basic_json_pointer<CharT> operator+( const basic_json_pointer<CharT>& lhs, const basic_json_pointer<CharT>& rhs )
+        friend basic_json_pointer operator+( const basic_json_pointer& lhs, const basic_json_pointer& rhs )
         {
-            basic_json_pointer<CharT> p(lhs);
+            basic_json_pointer p(lhs);
             p += rhs;
             return p;
         }
 
         friend bool operator==( const basic_json_pointer& lhs, const basic_json_pointer& rhs )
         {
-            return lhs.tokens_ == rhs.tokens_;
+            return lhs.ptr_ == rhs.ptr_;
         }
 
         friend bool operator!=( const basic_json_pointer& lhs, const basic_json_pointer& rhs )
         {
-            return lhs.tokens_ != rhs.tokens_;
+            return lhs.ptr_ != rhs.ptr_;
         }
 
-        friend std::basic_ostream<CharT>&
-        operator<<( std::basic_ostream<CharT>& os, const basic_json_pointer<CharT>& p )
+        friend std::basic_ostream<char_type>&
+        operator<<( std::basic_ostream<char_type>& os, const basic_json_pointer& p )
         {
             os << p.to_string();
             return os;
