@@ -6,6 +6,28 @@ permissions:
   contents: read
 
 jobs:
+  gcc_build8_5:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: install_gcc
+      run: |
+           sudo apt update
+           sudo apt install gcc-8.5 g++-8.5
+      shell: bash
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DJSONCONS_BUILD_TESTS=On
+      env:
+        CC:   gcc-8.5
+        CXX:  g++-8.5
+
+    - working-directory: build/
+      run: cmake --build . --config ubuntu-latest
+
+    - working-directory: build/
+      run: ctest -C ubuntu-latest --output-on-failure
+
   gcc_build:
     runs-on: ubuntu-latest
 

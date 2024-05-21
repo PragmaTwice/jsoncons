@@ -42,7 +42,7 @@ public:
     FreeListAllocator(const FreeListAllocator&) noexcept {}
     template <typename U>
     FreeListAllocator(const FreeListAllocator<U>&) noexcept {}
-    FreeListAllocator(FreeListAllocator&& other) noexcept :  list(other.list) {
+    FreeListAllocator(FreeListAllocator&& other) noexcept : list(other.list) {
         other.list = nullptr;
     }
 
