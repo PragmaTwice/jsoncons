@@ -60,7 +60,7 @@ namespace jsoncons { namespace jsonpointer {
         }
 
         explicit json_pointer_iter(value_type ptr)
-            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()),done_(start_ < end_)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()),done_(false)
         {
             std::error_code ec;
             current_ = get_next_token(ec);
@@ -71,7 +71,7 @@ namespace jsoncons { namespace jsonpointer {
         }
 
         explicit json_pointer_iter(const value_type& ptr, std::error_code& ec)
-            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()), done_(start_ < end_)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()), done_(false)
         {
             current_ = get_next_token(ec);
         }
@@ -142,8 +142,10 @@ namespace jsoncons { namespace jsonpointer {
         {
             if (JSONCONS_UNLIKELY(cur_ >= end_))
             {
-                done_ = true;
-                cur_ = end_;
+                if (start_ == end_)
+                {
+                    done_ = true;
+                }
                 return value_type{};
             }
             start_ = ++cur_;
@@ -179,9 +181,8 @@ namespace jsoncons { namespace jsonpointer {
                     }
                     ++cur_;
                 }
+                return buffer_;
             }
-
-            return buffer_;
         }
     };
 
