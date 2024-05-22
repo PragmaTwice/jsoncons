@@ -21,23 +21,12 @@
 
 namespace jsoncons { namespace jsonpointer {
 
-    namespace detail {
-
-    enum class pointer_state 
-    {
-        start,
-        escaped,
-        new_token,
-        part
-    };
-
-    } // namespace detail
-
     // basic_json_pointer
     
     template <class CharT>
     class json_pointer_iter
     {
+        enum class state_type{initial, token, done};
     public:
         using char_type = CharT;
         using string_type = std::basic_string<char_type>;
@@ -51,16 +40,16 @@ namespace jsoncons { namespace jsonpointer {
         const char_type* start_;
         const char_type* end_; 
         const char_type* cur_;
-        bool done_;
+        state_type state_;
         string_type buffer_;
         value_type current_;
     public:
-        json_pointer_iter() :start_(nullptr),  end_(nullptr), cur_(nullptr), done_(true)
+        json_pointer_iter() :start_(nullptr),  end_(nullptr), cur_(nullptr), state_(state_type::done)
         { 
         }
 
         explicit json_pointer_iter(value_type ptr)
-            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()),done_(false)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()),state_(state_type::initial)
         {
             std::error_code ec;
             current_ = get_next_token(ec);
@@ -71,13 +60,13 @@ namespace jsoncons { namespace jsonpointer {
         }
 
         explicit json_pointer_iter(const value_type& ptr, std::error_code& ec)
-            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()), done_(false)
+            : start_(ptr.data()), end_(start_+ptr.size()), cur_(ptr.data()), state_(state_type::initial)
         {
             current_ = get_next_token(ec);
         }
 
         explicit json_pointer_iter(const char_type* end) 
-            : start_(end), end_(end), cur_(end), done_(true)
+            : start_(end), end_(end), cur_(end), state_(state_type::done)
         { 
         }
 
@@ -98,7 +87,7 @@ namespace jsoncons { namespace jsonpointer {
 
         json_pointer_iter& operator++() 
         {
-            if (cur_ < end_)
+            if (state_ != state_type::done)
             {
                 std::error_code ec;
                 current_ = get_next_token(ec);
@@ -112,7 +101,7 @@ namespace jsoncons { namespace jsonpointer {
 
         json_pointer_iter& increment(std::error_code& ec) 
         {
-            if (cur_ < end_)
+            if (state_ != state_type::done)
             {
                 current_ = get_next_token(ec);
             }
@@ -128,7 +117,7 @@ namespace jsoncons { namespace jsonpointer {
 
         bool operator==(const json_pointer_iter& rhs) const noexcept
         {
-            return done_ == rhs.done_ && cur_ == rhs.cur_;
+            return state_ == rhs.state_ && cur_ == rhs.cur_;
         }
 
         bool operator!=(const json_pointer_iter& rhs) const noexcept
@@ -140,26 +129,34 @@ namespace jsoncons { namespace jsonpointer {
 
         value_type get_next_token(std::error_code& ec)
         {
-            if (JSONCONS_UNLIKELY(cur_ >= end_))
+            if (JSONCONS_UNLIKELY(cur_ == end_))
             {
-                if (start_ == end_)
+                if (state_ == state_type::initial)
                 {
-                    done_ = true;
+                    state_ = state_type::token;
+                }
+                else if (state_ == state_type::token)
+                {
+                    state_ = state_type::done;
                 }
                 return value_type{};
             }
-            start_ = ++cur_;
+            if (JSONCONS_UNLIKELY(state_ == state_type::initial))
+            {
+                state_ = state_type::token;
+            }
+            const char_type* start = ++cur_;
             while (cur_ < end_ && *cur_ != '~' && *cur_ != '/')
             {
                 ++cur_;
             }
             if (JSONCONS_LIKELY(cur_ == end_ || *cur_ == '/'))
             {
-                return value_type(start_, cur_ - start_);
+                return value_type(start, cur_ - start);
             }
             else // escape characters
             {
-                buffer_ = string_type{start_, std::size_t(cur_-start_)};
+                buffer_ = string_type{start, std::size_t(cur_-start)};
                 while (cur_ < end_ && *cur_ != '/')
                 {
                     if (*cur_ == '~')
