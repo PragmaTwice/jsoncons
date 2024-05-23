@@ -353,7 +353,7 @@ namespace jsoncons {
             {
                 members_.emplace_back(key_type(s->first,get_allocator()), s->second);
             }
-            std::stable_sort(members_.begin(),members_.end(),
+            std::stable_sort(members_.begin(), members_.end(),
                              [](const key_value_type& a, const key_value_type& b) -> bool {return a.key().compare(b.key()) < 0;});
             auto it = std::unique(members_.begin(), members_.end(),
                                   [](const key_value_type& a, const key_value_type& b) -> bool { return !(a.key().compare(b.key()));});
@@ -458,23 +458,12 @@ namespace jsoncons {
 
         iterator erase(const_iterator pos) 
         {
-    #if defined(JSONCONS_NO_VECTOR_ERASE_TAKES_CONST_ITERATOR)
-            iterator it = members_.begin() + (pos - members_.begin());
-            return members_.erase(it);
-    #else
             return members_.erase(pos);
-    #endif
         }
 
         iterator erase(const_iterator first, const_iterator last) 
         {
-    #if defined(JSONCONS_NO_VECTOR_ERASE_TAKES_CONST_ITERATOR)
-            iterator it1 = members_.begin() + (first - members_.begin());
-            iterator it2 = members_.begin() + (last - members_.begin());
-            return members_.erase(it1,it2);
-    #else
             return members_.erase(first,last);
-    #endif
         }
 
         void erase(const string_view_type& name) 
@@ -1224,12 +1213,7 @@ namespace jsoncons {
         {
             if (pos != members_.end())
             {
-    #if defined(JSONCONS_NO_VECTOR_ERASE_TAKES_CONST_ITERATOR)
-                iterator it = members_.begin() + (pos - members_.begin());
-                return members_.erase(it);
-    #else
                 return members_.erase(pos);
-    #endif
             }
             else
             {
@@ -1245,13 +1229,7 @@ namespace jsoncons {
             if (pos1 < members_.size() && pos2 <= members_.size())
             {
 
-    #if defined(JSONCONS_NO_VECTOR_ERASE_TAKES_CONST_ITERATOR)
-                iterator it1 = members_.begin() + (first - members_.begin());
-                iterator it2 = members_.begin() + (last - members_.begin());
-                return members_.erase(it1,it2);
-    #else
                 return members_.erase(first,last);
-    #endif
             }
             else
             {
@@ -1264,12 +1242,7 @@ namespace jsoncons {
             auto pos = find(name);
             if (pos != members_.end())
             {
-    #if defined(JSONCONS_NO_VECTOR_ERASE_TAKES_CONST_ITERATOR)
-                iterator it = members_.begin() + (pos - members_.begin());
-                members_.erase(it);
-    #else
                 members_.erase(pos);
-    #endif
             }
         }
 
