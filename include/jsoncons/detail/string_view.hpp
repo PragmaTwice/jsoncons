@@ -532,7 +532,6 @@ namespace detail {
     }
 
     using string_view = basic_string_view<char>;
-    using wstring_view = basic_string_view<wchar_t>;
 
 } // namespace detail
 } // namespace jsoncons

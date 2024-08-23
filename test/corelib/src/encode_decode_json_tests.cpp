@@ -85,35 +85,6 @@ TEST_CASE("encode and decode json")
     }
 }
 
-TEST_CASE("encode and decode wjson")
-{
-    wjson j(std::make_pair(false,std::wstring(L"foo")));
-
-    SECTION("string source")
-    {
-        std::wstring s;
-        encode_json(j, s);
-        wjson result = decode_json<wjson>(s);
-        CHECK(result == j);
-    }
-
-    SECTION("stream source")
-    {
-        std::wstringstream ss;
-        encode_json(j, ss);
-        wjson result = decode_json<wjson>(ss);
-        CHECK(result == j);
-    }
-
-    SECTION("iterator source")
-    {
-        std::wstring s;
-        encode_json(j, s);
-        wjson result = decode_json<wjson>(s.begin(), s.end());
-        CHECK(result == j);
-    }
-}
-
 TEST_CASE("convert_pair_test")
 {
     auto val = std::make_pair(false,std::string("foo"));

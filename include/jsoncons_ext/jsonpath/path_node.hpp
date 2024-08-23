@@ -319,16 +319,9 @@ namespace jsonpath {
     }
 
     using path_node = basic_path_node<char>;
-    using wpath_node = basic_path_node<wchar_t>;
 
     inline
     std::string to_string(const path_node& path)
-    {
-        return to_basic_string(path);
-    }
-
-    inline
-    std::wstring to_wstring(const wpath_node& path)
     {
         return to_basic_string(path);
     }

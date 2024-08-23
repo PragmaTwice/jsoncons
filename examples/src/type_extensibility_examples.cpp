@@ -170,11 +170,11 @@ void own_vector_extensibility_example()
 
 void templated_struct_example()
 {
-    using value_type = ns::TemplatedStruct<int,std::wstring>;
+    using value_type = ns::TemplatedStruct<int,std::string>;
 
-    value_type val{1, L"sss"};
+    value_type val{1, "sss"};
 
-    std::wstring s;
+    std::string s;
     encode_json(val, s);
 
     auto val2 = decode_json<value_type>(s);

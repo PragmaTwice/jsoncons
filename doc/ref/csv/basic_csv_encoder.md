@@ -20,8 +20,6 @@ Type                       |Definition
 ---------------------------|------------------------------
 csv_stream_encoder            |basic_csv_encoder<char,jsoncons::stream_sink<char>>
 csv_string_encoder     |basic_csv_encoder<char,jsoncons::string_sink<std::string>>
-wcsv_stream_encoder           |basic_csv_encoder<wchar_t,jsoncons::stream_sink<wchar_t>>
-wcsv_string_encoder    |basic_csv_encoder<wchar_t,jsoncons::string_sink<std::wstring>>
 
 #### Member types
 

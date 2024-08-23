@@ -24,18 +24,6 @@ TEST_CASE("convert into string")
         
         CHECK(s == expected);
     }
-    SECTION("from byte string into wstring")
-    {
-        value_converter<byte_string_view,std::wstring> converter;
-
-        std::wstring expected = L"Zm9vYmFy";
-
-        std::error_code ec;
-        std::wstring s = converter.convert(byte_string_view(bytes), semantic_tag::base64url, ec);
-        REQUIRE(!ec);
-
-        CHECK(s == expected);
-    }
 }
 
 TEST_CASE("convert into list-like")
@@ -50,18 +38,6 @@ TEST_CASE("convert into list-like")
         std::vector<uint8_t> v = converter.convert(jsoncons::string_view("Zm9vYmFy"), semantic_tag::base64url, ec);
         REQUIRE(!ec); 
         
-        CHECK(v == expected);
-    }
-    SECTION("from wstring")
-    {
-        value_converter<jsoncons::basic_string_view<wchar_t>,std::vector<uint8_t>> converter;
-
-        std::vector<uint8_t> expected = { 'f','o','o','b','a','r' };
-
-        std::error_code ec;
-        std::vector<uint8_t> v = converter.convert(jsoncons::wstring_view(L"Zm9vYmFy"), semantic_tag::base64url, ec);
-        REQUIRE(!ec);
-
         CHECK(v == expected);
     }
 }

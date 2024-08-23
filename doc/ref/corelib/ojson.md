@@ -77,7 +77,3 @@ Output:
 
 [json](json.md) constructs a json value that sorts name-value members alphabetically  
 
-[wjson](wjson.md) constructs a wide character json value that sorts name-value members alphabetically  
-
-[wojson](wojson.md) constructs a wide character json value that preserves the original insertion order of an object's name/value pairs  
-

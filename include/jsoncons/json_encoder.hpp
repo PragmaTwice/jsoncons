@@ -1590,14 +1590,10 @@ namespace detail {
     };
 
     using json_stream_encoder = basic_json_encoder<char,jsoncons::stream_sink<char>>;
-    using wjson_stream_encoder = basic_json_encoder<wchar_t,jsoncons::stream_sink<wchar_t>>;
     using compact_json_stream_encoder = basic_compact_json_encoder<char,jsoncons::stream_sink<char>>;
-    using compact_wjson_stream_encoder = basic_compact_json_encoder<wchar_t,jsoncons::stream_sink<wchar_t>>;
 
     using json_string_encoder = basic_json_encoder<char,jsoncons::string_sink<std::string>>;
-    using wjson_string_encoder = basic_json_encoder<wchar_t,jsoncons::string_sink<std::wstring>>;
     using compact_json_string_encoder = basic_compact_json_encoder<char,jsoncons::string_sink<std::string>>;
-    using compact_wjson_string_encoder = basic_compact_json_encoder<wchar_t,jsoncons::string_sink<std::wstring>>;
 
 } // namespace jsoncons
 

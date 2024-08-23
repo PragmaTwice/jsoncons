@@ -938,7 +938,6 @@ public:
 };
 
 using csv_options = basic_csv_options<char>;
-using wcsv_options = basic_csv_options<wchar_t>;
 
 }}
 #endif

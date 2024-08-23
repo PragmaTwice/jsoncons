@@ -12,7 +12,6 @@ Two specializations for common character types are defined:
 Type      |Definition
 ----------|------------------------------
 path_element   |`basic_path_element<char>` 
-wpath_element  |`basic_path_element<wchar_t>`
 
 Objects of type `basic_path_element` represent an element (name or index) of a normalized path.
 

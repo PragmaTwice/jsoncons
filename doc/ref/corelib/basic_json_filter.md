@@ -19,7 +19,6 @@ Aliases for common character types are provided:
 Type                |Definition
 --------------------|------------------------------
 json_filter    |`basic_json_filter<char>`
-wjson_filter   |`basic_json_filter<wchar_t>`
 
 #### Member types
 

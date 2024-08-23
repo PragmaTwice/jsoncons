@@ -16,9 +16,7 @@
 
 [About jsoncons::json](#A9)
 
-[Wide character support](#A10)
-
-[ojson and wojson](#A11)
+[ojson](#A11)
 
 <div id="A1"/>
 ### Introduction
@@ -872,14 +870,6 @@ typedef basic_json<char,
 ```
 If you prefer to retain the original insertion order, use [ojson](https://github.com/danielaparker/jsoncons/blob/master/doc/ref/corelib/ojson.md) instead.
 
-The library includes an instantiation for wide characters as well, [wjson](https://github.com/danielaparker/jsoncons/blob/master/ref/doc/wjson.md)
-```cpp
-typedef basic_json<wchar_t,
-                   Policy = sorted_policy,
-                   Allocator = std::allocator<wchar_t>> wjson;
-```
-If you prefer to retain the original insertion order, use [wojson](https://github.com/danielaparker/jsoncons/blob/master/doc/ref/corelib/wojson.md) instead.
-
 Note that the allocator type allows you to supply a custom allocator. For example, you can use the boost [fast_pool_allocator](http://www.boost.org/doc/libs/1_60_0/libs/pool/doc/html/boost/fast_pool_allocator.html):
 ```cpp
 #include <boost/pool/pool_alloc.hpp>
@@ -896,30 +886,12 @@ This results in a json value being constucted with all memory being allocated fr
 
 Note that the underlying memory pool used by the `boost::fast_pool_allocator` is never freed. 
 
-<div id="A10"/>
-### Wide character support
-
-jsoncons supports wide character strings `wjson`. It supports `UTF16` encoding if `wchar_t` has size 2 (Windows) and `UTF32` encoding if `wchar_t` has size 4. You can construct a `wjson` value in exactly the same way as a `json` value, for instance:
-```cpp
-using jsoncons::wjson;
-
-wjson j;
-j[L"field1"] = L"test";
-j[L"field2"] = 3.9;
-j[L"field3"] = true;
-
-std::wcout << j << L"\n";
-```
-which prints
-```cpp
-{"field1":"test","field2":3.9,"field3":true}
-```
 <div id="A11"/>
-### ojson and wojson
+### ojson 
 
-The [ojson](https://github.com/danielaparker/jsoncons/blob/master/doc/ref/corelib/ojson.md) ([wojson](https://github.com/danielaparker/jsoncons/blob/master/doc/ref/corelib/wojson.md)) class is an instantiation of the `basic_json` class template that uses `char` (`wchar_t`) as the character type and keeps object members in their original order. 
+The [ojson](https://github.com/danielaparker/jsoncons/blob/master/doc/ref/corelib/ojson.md) class is an instantiation of the `basic_json` class template that uses `char` as the character type and keeps object members in their original order. 
 ```cpp
-ojson o = ojson::parse(R"(
+auto o = ojson::parse(R"(
 {
     "street_number" : "100",
     "street_name" : "Queen St W",

@@ -806,15 +806,15 @@ TEST_CASE("JSONCONS_TPL_ALL_MEMBER_TRAITS tests")
 
         //std::cout << val.typeContent.first << ", " << val.typeContent.second << ", " << val.someString << "\n";
     }
-    SECTION("TemplatedStruct<int,wstring>")
+    SECTION("TemplatedStruct<int,string>")
     {
-        using value_type = ns::TemplatedStruct<int,std::wstring>;
+        using value_type = ns::TemplatedStruct<int,std::string>;
 
         value_type val;
         val.aT1 = 1;
-        val.aT2 = L"sss";
+        val.aT2 = "sss";
 
-        std::wstring s;
+        std::string s;
         encode_json(val, s, indenting::indent);
 
         auto val2 = decode_json<value_type>(s);
@@ -864,26 +864,6 @@ TEST_CASE("JSONCONS_ENUM_TRAITS tests")
         ns::float_format val{ns::float_format()};
 
         std::string s;
-        encode_json(val,s);
-
-        auto val2 = decode_json<ns::float_format>(s);
-        CHECK(val2 == val);
-    }
-    SECTION("float_format default L")
-    {
-        ns::float_format val{ns::float_format::hex};
-
-        std::wstring s;
-        encode_json(val,s);
-
-        auto val2 = decode_json<ns::float_format>(s);
-        CHECK(val2 == val);
-    }
-    SECTION("float_format hex L")
-    {
-        ns::float_format val{ns::float_format::hex};
-
-        std::wstring s;
         encode_json(val,s);
 
         auto val2 = decode_json<ns::float_format>(s);

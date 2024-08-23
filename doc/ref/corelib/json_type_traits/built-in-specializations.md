@@ -7,9 +7,9 @@ jsoncons supports many types in the standard library.
 * bool
 * [nullptr_t](https://en.cppreference.com/w/cpp/types/nullptr_t) (since 0.155.0)
 * [basic_string](#basic_string) - jsoncons supports [std::basic_string](https://en.cppreference.com/w/cpp/string/basic_string) 
-with character types `char` and `wchar_t`
+with character types `char`
 * [basic_string_view](#basic_string_view) - jsoncons supports [std::basic_string_view](https://en.cppreference.com/w/cpp/string/basic_string_view) 
-with character types `char` and `wchar_t`
+with character types `char`
 * [duration](#duration) (since 0.155.0) - covers [std::chrono::duration](https://en.cppreference.com/w/cpp/chrono/duration)
 for tick periods `std::ratio<1>` (one second), `std::milli` and  `std::nano`.
 * [pair](#pair)

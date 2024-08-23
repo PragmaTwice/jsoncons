@@ -12,7 +12,6 @@ Two specializations for common character types are defined:
 Type      |Definition
 ----------|------------------------------
 path_node   |`basic_path_node<char>` 
-wpath_node  |`basic_path_node<wchar_t>` 
 
 Objects of type `basic_path_node` represent a normalized path as a
 singly linked list where each node has a pointer to its (shared) parent
@@ -72,6 +71,4 @@ Returns the kind of the node
 Returns a normalized path
 
     std::string to_string(const path_node& path)
-
-    std::wstring to_wstring(const wpath_node& path)
 

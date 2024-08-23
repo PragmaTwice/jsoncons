@@ -2091,7 +2091,6 @@ private:
 };
 
 using csv_parser = basic_csv_parser<char>;
-using wcsv_parser = basic_csv_parser<wchar_t>;
 
 }}
 

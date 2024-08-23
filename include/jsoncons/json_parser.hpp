@@ -2819,7 +2819,6 @@ private:
 };
 
 using json_parser = basic_json_parser<char>;
-using wjson_parser = basic_json_parser<wchar_t>;
 
 }
 

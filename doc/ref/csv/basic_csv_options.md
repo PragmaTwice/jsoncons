@@ -56,7 +56,6 @@ Aliases for common character types are provided:
 Type                |Definition
 --------------------|------------------------------
 `csv_options`        |`basic_csv_options<char>`
-`wcsv_options`       |`basic_csv_options<wchar_t>`
 
 Member type                         |Definition
 ------------------------------------|------------------------------

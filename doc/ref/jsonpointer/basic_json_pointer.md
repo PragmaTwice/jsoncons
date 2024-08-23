@@ -13,8 +13,6 @@ Type      |Definition
 ----------|------------------------------
 json_pointer   |`basic_json_pointer<char>` (since 0.159.0)
 json_ptr       |`basic_json_pointer<char>` (until 0.159.0)
-wjson_pointer  |`basic_json_pointer<wchar_t>` (since 0.159.0)
-wjson_ptr      |`basic_json_pointer<wchar_t>` (unitl 0.159.0)
 
 Objects of type `basic_json_pointer` represent a JSON Pointer.
 
@@ -114,8 +112,6 @@ Concatenates two JSON Pointers. Effectively returns basic_json_pointer<CharT>(lh
     bool operator!=(const basic_json_pointer<CharT>& lhs, const basic_json_pointer<CharT>& rhs);
 
     std::string to_string(const json_pointer& ptr);      (since 0.172.0)
-
-    std::wstring to_wstring(const wjson_pointer& ptr);   (since 0.172.0)
 
     template <typename CharT>
     std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const basic_json_pointer<CharT>& ptr);

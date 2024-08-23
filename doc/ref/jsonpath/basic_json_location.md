@@ -12,7 +12,6 @@ Two specializations for common character types are defined:
 Type      |Definition
 ----------|------------------------------
 json_location   |`basic_json_location<char>`
-wjson_location  |`basic_json_location<wchar_t>`
 
 Objects of type `basic_json_location` represents the location of a specific value in a JSON document.
 
@@ -111,8 +110,6 @@ using the dot notation.
 Returns a normalized path
 
     std::string to_string(const json_location& location)
-
-    std::wstring to_wstring(const wjson_location& location)
 
 ### Examples
 

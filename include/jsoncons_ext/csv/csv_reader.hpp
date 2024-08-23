@@ -334,9 +334,7 @@ namespace jsoncons { namespace csv {
     };
 
     using csv_string_reader = basic_csv_reader<char,string_source<char>>;
-    using wcsv_string_reader = basic_csv_reader<wchar_t,string_source<wchar_t>>;
     using csv_stream_reader = basic_csv_reader<char,stream_source<char>>;
-    using wcsv_stream_reader = basic_csv_reader<wchar_t,stream_source<wchar_t>>;
 
 }}
 

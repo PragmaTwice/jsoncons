@@ -18,7 +18,6 @@ Aliases for common character types are provided:
 Type                |Definition
 --------------------|------------------------------
 default_json_visitor    |`basic_default_json_visitor<char>`
-wdefault_json_visitor   |`basic_default_json_visitor<wchar_t>`
 
 #### Member types
 

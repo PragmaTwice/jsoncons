@@ -847,25 +847,6 @@ public:
         }
         return val;
     }
-
-    template <typename CharT>
-    typename std::enable_if<std::is_same<CharT,wchar_t>::value,double>::type
-    operator()(const CharT* s, std::size_t len) const
-    {
-        std::string input(len,'0');
-        for (size_t i = 0; i < len; ++i)
-        {
-            input[i] = static_cast<char>(s[i]);
-        }
-
-        double val = 0;
-        const auto res = std::from_chars(input.data(), input.data() + len, val);
-        if (res.ec != std::errc())
-        {
-            JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert chars to double failed"));
-        }
-        return val;
-    }
 };
 #elif defined(JSONCONS_HAS_MSC_STRTOD_L)
 
@@ -905,19 +886,6 @@ public:
     {
         CharT *end = nullptr;
         double val = _strtod_l(s, &end, locale_);
-        if (s == end)
-        {
-            JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert string to double failed"));
-        }
-        return val;
-    }
-
-    template <typename CharT>
-    typename std::enable_if<std::is_same<CharT,wchar_t>::value,double>::type
-    operator()(const CharT* s, std::size_t) const
-    {
-        CharT *end = nullptr;
-        double val = _wcstod_l(s, &end, locale_);
         if (s == end)
         {
             JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert string to double failed"));
@@ -969,19 +937,6 @@ public:
         }
         return val;
     }
-
-    template <typename CharT>
-    typename std::enable_if<std::is_same<CharT,wchar_t>::value,double>::type
-    operator()(const CharT* s, std::size_t) const
-    {
-        CharT *end = nullptr;
-        double val = wcstold_l(s, &end, locale_);
-        if (s == end)
-        {
-            JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert string to double failed"));
-        }
-        return val;
-    }
 };
 
 #else
@@ -1020,19 +975,6 @@ public:
     {
         CharT *end = nullptr;
         double val = strtod(s, &end);
-        if (s == end)
-        {
-            JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert string to double failed"));
-        }
-        return val;
-    }
-
-    template <typename CharT>
-    typename std::enable_if<std::is_same<CharT,wchar_t>::value,double>::type
-    operator()(const CharT* s, std::size_t /*length*/) const
-    {
-        CharT *end = nullptr;
-        double val = wcstod(s, &end);
         if (s == end)
         {
             JSONCONS_THROW(json_runtime_error<std::invalid_argument>("Convert string to double failed"));

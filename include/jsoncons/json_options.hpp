@@ -683,7 +683,6 @@ private:
 };
 
 using json_options = basic_json_options<char>;
-using wjson_options = basic_json_options<wchar_t>;
 
 }
 #endif

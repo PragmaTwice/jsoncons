@@ -25,18 +25,6 @@ BOOST_AUTO_TEST_CASE( test_surrogate_pair )
     CHECK(input == output);
 }
 
-TEST_CASE("test_wide_surrogate_pair")
-{
-    std::wstring input = L"[\"\\u8A73\\u7D30\\u95B2\\u89A7\\uD800\\uDC01\\u4E00\"]";
-    wjson value = wjson::parse(input);
-    auto options = wjson_options{}
-        .escape_all_non_ascii(true);
-    std::wstring output;
-    value.dump(output,options);
-
-    CHECK(input == output);
-}
-
 BOOST_AUTO_TEST_CASE( test1 )
 {
     std::istringstream is("{\"unicode_string_1\":\"\\uD800\\uDC00\"}");

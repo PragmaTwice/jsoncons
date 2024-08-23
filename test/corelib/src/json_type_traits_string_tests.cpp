@@ -10,7 +10,6 @@
 
 using jsoncons::json_type_traits;
 using jsoncons::json;
-using jsoncons::wjson;
 using jsoncons::decode_json;
 using jsoncons::encode_json;
 
@@ -20,7 +19,7 @@ TEST_CASE("json_type_traits string tests")
     {
         std::string s = "foo";
 
-        std::wstring buf;
+        std::string buf;
         encode_json(s,buf);
 
         auto s2 = decode_json<std::string>(buf);
@@ -29,12 +28,12 @@ TEST_CASE("json_type_traits string tests")
     }
     SECTION("test 2")
     {
-        std::wstring s = L"foo";
+        std::string s = "foo";
 
         std::string buf;
         encode_json(s,buf);
 
-        auto s2 = decode_json<std::wstring>(buf);
+        auto s2 = decode_json<std::string>(buf);
 
         CHECK(s2 == s);
     }
@@ -46,7 +45,7 @@ TEST_CASE("json_type_traits vector of string tests")
     {
         std::vector<std::string> v = {"foo","bar","baz"};
 
-        std::wstring buf;
+        std::string buf;
         encode_json(v,buf);
 
         auto v2 = decode_json<std::vector<std::string>>(buf);
@@ -55,12 +54,12 @@ TEST_CASE("json_type_traits vector of string tests")
     }
     SECTION("test 2")
     {
-        std::vector<std::wstring> v = {L"foo",L"bar",L"baz"};
+        std::vector<std::string> v = {"foo","bar","baz"};
 
         std::string buf;
         encode_json(v,buf);
 
-        auto v2 = decode_json<std::vector<std::wstring>>(buf);
+        auto v2 = decode_json<std::vector<std::string>>(buf);
 
         CHECK(v2 == v);
     }

@@ -349,16 +349,9 @@ namespace jsoncons { namespace jsonpointer {
     }
 
     using json_pointer = basic_json_pointer<char>;
-    using wjson_pointer = basic_json_pointer<wchar_t>;
 
     inline
     std::string to_string(const json_pointer& ptr)
-    {
-        return ptr.to_string();
-    }
-
-    inline
-    std::wstring to_wstring(const wjson_pointer& ptr)
     {
         return ptr.to_string();
     }

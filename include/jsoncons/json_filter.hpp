@@ -600,9 +600,7 @@ json_visitor_adaptor<From,To> make_json_visitor_adaptor(To& to)
 }
 
 using json_filter = basic_json_filter<char>;
-using wjson_filter = basic_json_filter<wchar_t>;
 using rename_object_key_filter = basic_rename_object_key_filter<char>;
-using wrename_object_key_filter = basic_rename_object_key_filter<wchar_t>;
 
 }
 

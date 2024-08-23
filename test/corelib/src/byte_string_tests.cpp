@@ -88,16 +88,6 @@ TEST_CASE("test_base64_conversion")
         check_encode_base64<char>({'f','o','o','b','a'}, "Zm9vYmE=");
         check_encode_base64<char>({'f','o','o','b','a','r'}, "Zm9vYmFy");
     }
-    SECTION("wchar_t")
-    {
-        check_encode_base64<wchar_t>({}, L"");
-        check_encode_base64<wchar_t>({'f'}, L"Zg==");
-        check_encode_base64<wchar_t>({'f','o'}, L"Zm8=");
-        check_encode_base64<wchar_t>({'f','o','o'}, L"Zm9v");
-        check_encode_base64<wchar_t>({'f','o','o','b'}, L"Zm9vYg==");
-        check_encode_base64<wchar_t>({'f','o','o','b','a'}, L"Zm9vYmE=");
-        check_encode_base64<wchar_t>({'f','o','o','b','a','r'}, L"Zm9vYmFy");
-    }
 }
 
 TEST_CASE("test_base64url_conversion")
@@ -112,16 +102,6 @@ TEST_CASE("test_base64url_conversion")
         check_encode_base64url<char>({'f','o','o','b','a'}, "Zm9vYmE");
         check_encode_base64url<char>({'f','o','o','b','a','r'}, "Zm9vYmFy");
     }
-    SECTION("wchar_t")
-    {
-        check_encode_base64url<wchar_t>({}, L"");
-        check_encode_base64url<wchar_t>({'f'}, L"Zg");
-        check_encode_base64url<wchar_t>({'f','o'}, L"Zm8");
-        check_encode_base64url<wchar_t>({'f','o','o'}, L"Zm9v");
-        check_encode_base64url<wchar_t>({'f','o','o','b'}, L"Zm9vYg");
-        check_encode_base64url<wchar_t>({'f','o','o','b','a'}, L"Zm9vYmE");
-        check_encode_base64url<wchar_t>({'f','o','o','b','a','r'}, L"Zm9vYmFy");
-    }
 }
  
 TEST_CASE("test_base16_conversion")
@@ -135,16 +115,6 @@ TEST_CASE("test_base16_conversion")
         check_encode_base16<char>({'f','o','o','b'}, "666F6F62");
         check_encode_base16<char>({'f','o','o','b','a'}, "666F6F6261");
         check_encode_base16<char>({'f','o','o','b','a','r'}, "666F6F626172");
-    }
-    SECTION ("wstring")
-    {
-        check_encode_base16<wchar_t>({}, L"");
-        check_encode_base16<wchar_t>({'f'}, L"66");
-        check_encode_base16<wchar_t>({'f','o'}, L"666F");
-        check_encode_base16<wchar_t>({'f','o','o'}, L"666F6F");
-        check_encode_base16<wchar_t>({'f','o','o','b'}, L"666F6F62");
-        check_encode_base16<wchar_t>({'f','o','o','b','a'}, L"666F6F6261");
-        check_encode_base16<wchar_t>({'f','o','o','b','a','r'}, L"666F6F626172");
     }
 }
 

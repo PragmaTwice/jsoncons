@@ -732,13 +732,10 @@ public:
 };
 
 using staj_event = basic_staj_event<char>;
-using wstaj_event = basic_staj_event<wchar_t>;
 
 using staj_cursor = basic_staj_cursor<char>;
-using wstaj_cursor = basic_staj_cursor<wchar_t>;
 
 using staj_filter_view = basic_staj_filter_view<char>;
-using wstaj_filter_view = basic_staj_filter_view<wchar_t>;
 
 }
 

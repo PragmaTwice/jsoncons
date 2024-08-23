@@ -934,18 +934,10 @@ namespace jsonpath {
     }
 
     using json_location = basic_json_location<char>;
-    using wjson_location = basic_json_location<wchar_t>;
     using path_element = basic_path_element<char,std::allocator<char>>;
-    using wpath_element = basic_path_element<wchar_t,std::allocator<char>>;
 
     inline
     std::string to_string(const json_location& location)
-    {
-        return to_basic_string(location);
-    }
-
-    inline
-    std::wstring to_wstring(const wjson_location& location)
     {
         return to_basic_string(location);
     }

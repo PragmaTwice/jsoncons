@@ -133,9 +133,6 @@ int main()
 
     // or to json (now alphabetically sorted)
     json j3 = msgpack::decode_msgpack<json>(v);
-
-    // or to wjson (converts from utf8 to wide characters)
-    wjson j4 = msgpack::decode_msgpack<wjson>(v);
 }
 ```
 Output:

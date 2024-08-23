@@ -13,9 +13,6 @@ namespace pmr {
     template <typename CharT,typename Policy>
     using basic_json = jsoncons::basic_json<CharT, Policy, std::pmr::polymorphic_allocator<char>>;
     using json = basic_json<char,sorted_policy>;                                                     (since 0.171.0)
-    using wjson = basic_json<wchar_t,sorted_policy>;
-    using ojson = basic_json<char, order_preserving_policy>;
-    using wojson = basic_json<wchar_t, order_preserving_policy>;
 }
 ```
 
@@ -44,12 +41,8 @@ Type                |Definition
 --------------------|------------------------------
 [jsoncons::json](json.md)     |`jsoncons::basic_json<char,jsoncons::sorted_policy,std::allocator<char>>`
 [jsoncons::ojson](ojson.md)   |`jsoncons::basic_json<char,jsoncons::order_preserving_policy,std::allocator<char>>`
-[jsoncons::wjson](wjson.md)   |`jsoncons::basic_json<wchar_t,jsoncons::jsoncons::sorted_policy,std::allocator<char>>`
-[jsoncons::wojson](wojson.md) |`jsoncons::basic_json<wchar_t,jsoncons::order_preserving_policy,std::allocator<char>>`
 `jsoncons::pmr::json` (0.171.0) |`jsoncons::pmr::basic_json<char,jsoncons::sorted_policy>`
 `jsoncons::pmr::ojson` (0.171.0) |`jsoncons::pmr::basic_json<char,jsoncons::order_preserving_policy>`
-`jsoncons::pmr::wjson` (0.171.0) |`jsoncons::pmr::basic_json<wchar_t,jsoncons::sorted_policy>`
-`jsoncons::pmr::wojson` (0.171.0) |`jsoncons::pmr::basic_json<wchar_t,jsoncons::order_preserving_policy>`
 
 Member type                         |Definition
 ------------------------------------|------------------------------

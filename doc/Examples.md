@@ -446,7 +446,7 @@ Maximum JSON depth exceeded at line 1 and column 21
 
 #### Prevent the alphabetic sort of the outputted JSON, retaining the original insertion order
 
-Use `ojson` instead of `json` (or `wojson` instead of `wjson`) to retain the original insertion order. 
+Use `ojson` instead of `json` to retain the original insertion order. 
 
 ```cpp
 ojson j = ojson::parse(R"(
@@ -1926,11 +1926,11 @@ using namespace jsoncons; // for convenience
 
 int main()
 {
-    using value_type = ns::TemplatedStruct<int,std::wstring>;
+    using value_type = ns::TemplatedStruct<int,std::string>;
 
-    value_type val{1, L"sss"};
+    value_type val{1, "sss"};
 
-    std::wstring s;
+    std::string s;
     encode_json(val, s);
 
     auto val2 = decode_json<value_type>(s);

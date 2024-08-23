@@ -924,15 +924,6 @@ namespace jsoncons {
         {
         }
 
-        // If CharT is wchar_t, then enable the default constructor which binds
-        // to std::wcout.
-        template <typename U = enabler>
-        basic_json_diagnostics_visitor(
-            typename std::enable_if<std::is_same<CharT, wchar_t>::value, U>::type = enabler{})
-            : basic_json_diagnostics_visitor(std::wcout)
-        {
-        }
-
         explicit basic_json_diagnostics_visitor(
             stream_type& output,
             string_type indentation = string_type())
@@ -1054,13 +1045,10 @@ namespace jsoncons {
 #endif // C++17 check
 
     using json_visitor = basic_json_visitor<char>;
-    using wjson_visitor = basic_json_visitor<wchar_t>;
 
     using default_json_visitor = basic_default_json_visitor<char>;
-    using wdefault_json_visitor = basic_default_json_visitor<wchar_t>;
 
     using json_diagnostics_visitor = basic_json_diagnostics_visitor<char>;
-    using wjson_diagnostics_visitor = basic_json_diagnostics_visitor<wchar_t>;
 
 } // namespace jsoncons
 

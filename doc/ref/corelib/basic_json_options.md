@@ -53,7 +53,6 @@ Aliases for common character types are provided:
 Type                |Definition
 --------------------|------------------------------
 `json_options`        |`basic_json_options<char>`
-`wjson_options`       |`basic_json_options<wchar_t>`
 
 #### Member constants
 

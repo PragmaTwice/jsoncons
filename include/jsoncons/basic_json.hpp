@@ -5455,9 +5455,7 @@ namespace jsoncons {
     }
 
     using json = basic_json<char,sorted_policy,std::allocator<char>>;
-    using wjson = basic_json<wchar_t,sorted_policy,std::allocator<char>>;
     using ojson = basic_json<char, order_preserving_policy, std::allocator<char>>;
-    using wojson = basic_json<wchar_t, order_preserving_policy, std::allocator<char>>;
 
     inline namespace literals {
 
@@ -5467,22 +5465,10 @@ namespace jsoncons {
         return jsoncons::json::parse(jsoncons::json::string_view_type(s, n));
     }
 
-    inline 
-    jsoncons::wjson operator "" _json(const wchar_t* s, std::size_t n)
-    {
-        return jsoncons::wjson::parse(jsoncons::wjson::string_view_type(s, n));
-    }
-
     inline
     jsoncons::ojson operator "" _ojson(const char* s, std::size_t n)
     {
         return jsoncons::ojson::parse(jsoncons::ojson::string_view_type(s, n));
-    }
-
-    inline
-    jsoncons::wojson operator "" _ojson(const wchar_t* s, std::size_t n)
-    {
-        return jsoncons::wojson::parse(jsoncons::wojson::string_view_type(s, n));
     }
 
     } // inline namespace literals
@@ -5492,9 +5478,7 @@ namespace jsoncons {
         template< typename CharT,typename Policy>
         using basic_json = jsoncons::basic_json<CharT, Policy, std::pmr::polymorphic_allocator<char>>;
         using json = basic_json<char,sorted_policy>;
-        using wjson = basic_json<wchar_t,sorted_policy>;
         using ojson = basic_json<char, order_preserving_policy>;
-        using wojson = basic_json<wchar_t, order_preserving_policy>;
     } // namespace pmr
     #endif
 

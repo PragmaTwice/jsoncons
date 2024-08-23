@@ -255,7 +255,6 @@ namespace jsoncons
 #define JSONCONS_GENERATE_NAME_STR(Prefix, P2, P3, Member, Count) JSONCONS_GENERATE_NAME_STR_LAST(Prefix, P2, P3, Member, Count) 
 #define JSONCONS_GENERATE_NAME_STR_LAST(Prefix, P2, P3, Member, Count) \
     static inline const char* Member ## _str(char) {return JSONCONS_QUOTE(,Member);} \
-    static inline const wchar_t* Member ## _str(wchar_t) {return JSONCONS_QUOTE(L,Member);} \
     /**/
 
 #define JSONCONS_N_MEMBER_IS(Prefix, P2, P3, Member, Count) JSONCONS_N_MEMBER_IS_LAST(Prefix, P2, P3, Member, Count)

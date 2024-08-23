@@ -934,8 +934,6 @@ private:
 
 using csv_stream_encoder = basic_csv_encoder<char>;
 using csv_string_encoder = basic_csv_encoder<char,jsoncons::string_sink<std::string>>;
-using csv_wstream_encoder = basic_csv_encoder<wchar_t>;
-using wcsv_string_encoder = basic_csv_encoder<wchar_t,jsoncons::string_sink<std::wstring>>;
 
 }}
 
